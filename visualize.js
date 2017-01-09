@@ -54,5 +54,5 @@ $(document).ready(function() {
         });
     }
 
-    // PUT D3 CODE HERE
+    // PUT D3 CODE HERE, use three arrays (cost, time, distance) above
 });
