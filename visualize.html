@@ -6,9 +6,29 @@
         <script src="visualize.js"></script>
         <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.6/semantic.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+        <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
         <title>Lyft & Uber data summarizer</title>
     </head>
 
     <body>
+       <h1>SUMMARY OF YOUR 2016 RIDES</h1>
+    <img id= "uber-lyft" src = "uber_lyft.jpg"/>
+    <div id="summary">
+      <div class="graph">
+        <svg class="cost"></svg>
+        <h2>HOW MUCH DID YOU SPEND?</h2>
+        <h2>COST</h2>
+      </div>
+      <div class="graph">
+        <svg class="time"></svg>
+        <h2>HOW LONG WERE YOU IN THE CAR?</h2>
+        <h2>TIME</h2>
+      </div>
+      <div class="graph">
+        <svg class="distance"></svg>
+        <h2>HOW FAR DID YOU GO?</h2>
+        <h2>DISTANCE</h2>
+      </div>
+    </div>
     </body>
 </html>
