@@ -29,36 +29,40 @@ $(document).ready(function() {
     var distance = [0,0,0,0,0,0,0,0,0,0,0,0];
 
     if (getParameterByName('lyft_token')) {
-        $.ajax({
-            type: "GET",
-            url: "https://api.lyft.com/v1/rides?start_time=" +
-            '2015-01-01T00:00:00Z' + '&end_time=' + '2016-01-01T00:00:00Z' + '&limit=10', // just 2015
-            dataType: 'json',
-            async: false,
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader ("Authorization", "Bearer " + getParameterByName('lyft_token'))
-            },
-            success: function (data) {
-                data.ride_history.forEach(function(s,i) {
-                    if (s.status == "droppedOff" && s.price.currency=="USD") {
-                        req_at = moment(s.requested_at);
-                        dropped_at = moment(s.dropoff.time);
-                        cost[req_at.get('month')] += parseFloat(s.price.amount)/100;
-                        time[req_at.get('month')] += parseFloat(moment.duration(dropped_at.diff(req_at)).asHours());
-                        distance[req_at.get('month')] += getDistanceFromLatLonInKm(
-                            s.origin.lat, s.origin.lng,
-                            s.pickup.lat, s.pickup.lng) * 0.621371; //KM to miles
-                    }
-                });
-            }
-        });
+        for (var i=0; i<7; ++i) {
+            $.ajax({
+                type: "GET",
+                url: "https://api.lyft.com/v1/rides?limit=50&start_time=" +
+                '2015-0' + (i+1) + '-01T00:00:00Z' + '&end_time=' + '2015-0' + (i+2) + '-01T00:00:00Z' + '', // just 2015
+                dataType: 'json',
+                async: false,
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader ("Authorization", "Bearer " + getParameterByName('lyft_token'))
+                },
+                success: function (data) {
+                    data.ride_history.forEach(function(s,i) {
+                        if (s.status == "droppedOff" && s.price.currency=="USD") {
+                            req_at = moment(s.requested_at);
+                            dropped_at = moment(s.dropoff.time);
+                            cost[req_at.get('month')] += parseInt(parseFloat(s.price.amount)/100);
+                            time[req_at.get('month')] += parseInt(moment.duration(dropped_at.diff(req_at)).asMinutes());
+                            distance[req_at.get('month')] += getDistanceFromLatLonInKm(
+                                s.origin.lat, s.origin.lng,
+                                s.pickup.lat, s.pickup.lng) * 0.621371; //KM to miles
+
+                            distance[req_at.get('month')] = parseFloat(distance[req_at.get('month')].toFixed(2));
+                        }
+                    });
+                }
+            });
+        }
     }
 
     // PUT D3 CODE HERE, use three arrays (cost, time, distance) above
     
     var data = cost;
 
-	var width = 420,
+	var width = 350,
 	    barHeight = 30;
 
 	var x = d3.scale.linear()
